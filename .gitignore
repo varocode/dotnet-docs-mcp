@@ -1,0 +1,55 @@
+# .NET build output
+bin/
+obj/
+*.user
+*.suo
+*.userprefs
+
+# Publish output
+publish/
+out/
+*.pubxml.user
+
+# IDE files
+.vs/
+.idea/
+.vscode/*
+!.vscode/launch.json
+!.vscode/tasks.json
+!.vscode/settings.json
+!.vscode/extensions.json
+
+# Rider
+*.sln.iml
+.idea/
+
+# Test results
+TestResults/
+*.coverage
+*.coveragexml
+coverage.opencover.xml
+
+# NuGet
+*.nupkg
+*.snupkg
+.nuget/
+packages/
+!**/packages/build/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# AOT artifacts
+*.dbg
+*.symbols
+
+# Local secrets
+appsettings.Development.json
+appsettings.Local.json
+*.local.json
+.env
+.env.local
