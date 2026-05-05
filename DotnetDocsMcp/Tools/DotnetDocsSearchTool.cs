@@ -10,26 +10,29 @@ public sealed class DotnetDocsSearchTool(IMicrosoftLearnSearch searchService)
 {
     [McpServerTool]
     [Description(
-        "Busca en la documentación oficial de .NET / C# en Microsoft Learn. " +
-        "Devuelve los resultados más relevantes con título, URL, descripción " +
-        "y fecha de última actualización. Útil para responder preguntas técnicas " +
-        "con fuentes oficiales y actualizadas.")]
+        "Busca en la documentación oficial de .NET / C# / ASP.NET Core / EF Core en Microsoft Learn. " +
+        "Devuelve resultados oficiales filtrados al scope .NET (no contamina con docs de Azure, Power Platform o certificaciones). " +
+        "Para mejores resultados, formula la query en INGLÉS con keywords técnicas específicas " +
+        "(ej: 'IAsyncEnumerable cancellation token', 'JsonSerializer source generators', 'minimal API authentication'). " +
+        "El parámetro 'scope' permite cambiar el filtro a otros productos del ecosistema Microsoft.")]
     public async Task<string> SearchDotnetDocs(
-        [Description("La consulta de búsqueda. Puede ser lenguaje natural o keywords técnicas (ejemplo: 'IAsyncEnumerable performance' o 'cómo configurar HttpClient con Polly').")]
+        [Description("La consulta de búsqueda en inglés con keywords técnicas. Funciona mejor con nombres específicos del BCL, namespaces, tipos o features (ej: 'System.Text.Json polymorphism', 'primary constructors C# 12', 'minimal API filters').")]
         string query,
         [Description("Cuántos resultados devolver. Default: 5. Máximo recomendado: 10.")]
         int top = 5,
+        [Description("Scope del filtro Microsoft Learn. Default: '.NET'. Otros valores válidos: 'ASP.NET Core', 'Entity Framework Core', '.NET MAUI', 'Azure', 'Power Platform'. Usa este parámetro solo si necesitás explícitamente buscar fuera de .NET.")]
+        string scope = ".NET",
         CancellationToken cancellationToken = default)
     {
-        var response = await searchService.SearchAsync(query, top, cancellationToken: cancellationToken);
+        var response = await searchService.SearchAsync(query, top, scope, cancellationToken: cancellationToken);
 
         if (response.Results.Count == 0)
         {
-            return $"No se encontraron resultados en Microsoft Learn para: \"{query}\"";
+            return $"No se encontraron resultados en Microsoft Learn (scope: {scope}) para: \"{query}\"";
         }
 
         var output = new StringBuilder();
-        output.AppendLine($"Encontrados {response.Count} resultados (mostrando {response.Results.Count}):");
+        output.AppendLine($"Resultados de Microsoft Learn (scope: {scope}, mostrando {response.Results.Count}):");
         output.AppendLine();
 
         for (var i = 0; i < response.Results.Count; i++)
